@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components/macro';
+import React from "react";
+import styled from "styled-components/macro";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -31,11 +31,18 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
+  const isOnSale = variant === "on-sale";
+
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {variant === "default" ? null : (
+            <InfoLabel color={isOnSale ? COLORS.primary : COLORS.secondary}>
+              {isOnSale ? "Sale" : "Just released!"}
+            </InfoLabel>
+          )}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
@@ -43,7 +50,8 @@ const ShoeCard = ({
           <Price>{formatPrice(price)}</Price>
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {isOnSale ? <SalePrice>{salePrice}</SalePrice> : null}
         </Row>
       </Wrapper>
     </Link>
@@ -53,6 +61,9 @@ const ShoeCard = ({
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
+  display: block;
+  flex: 1;
+  flex-basis: 400px;
 `;
 
 const Wrapper = styled.article``;
@@ -61,7 +72,9 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
@@ -81,6 +94,17 @@ const ColorInfo = styled.p`
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const InfoLabel = styled.span`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  padding: 9px 11px;
+  border-radius: 2px;
+  background-color: ${(p) => p.color};
+  color: white;
+  font-weight: ${WEIGHTS.medium};
 `;
 
 export default ShoeCard;
